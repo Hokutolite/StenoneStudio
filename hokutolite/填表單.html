@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>匿名意見調查問卷 - Hokutolite</title>
+    <link rel="icon" type="image/png" href="icon.png">    
+    <style>
+ /* 基礎設定與清除 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body, html {
+            min-height: 100%;
+            font-family: "Helvetica Neue", Arial, "Noto Sans TC", sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* 複製主站背景與模糊特效 */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('background.png'); 
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            filter: blur(10px); 
+            background-color: rgba(30, 31, 34, 0.65); /* 同步深礦岩灰遮罩 */
+            background-blend-mode: multiply;
+            z-index: -1; 
+            transform: scale(1.1); 
+        }
+
+        /* 表單外層寬度限制 */
+        .container {
+            width: 100%;
+            max-width: 500px;
+            padding: 20px;
+            margin: 30px auto;
+        }
+
+        /* 複製主站的半透明白底內容卡片 */
+        .form-card {
+            background-color: rgba(248, 246, 240, 0.95); /* 同步結晶乳白底色 */
+            padding: 35px;
+            border-radius: 16px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        h2 {
+            font-size: 1.6rem;
+            color: #4a3b2c; /* 同步深黃褐岩色 */
+            margin-bottom: 20px;
+            border-left: 5px solid #cfa365; /* 同步北投石蜜黃色 */
+            padding-left: 10px;
+            font-weight: bold;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #4a3b2c; /* 同步深黃褐岩色 */
+        }
+
+        /* 輸入框微調，融入整體風格 */
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #b89056; /* 這裡改：蜜黃色邊框 */
+            border-radius: 6px;
+            font-size: 1rem;
+            background-color: rgba(255, 255, 255, 0.9);
+            color: #2b2621; /* 這裡改：深泥岩黑褐色 */
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus, textarea:focus {
+            border-color: #cfa365; /* 這裡改：聚焦時變為完全體蜜黃色 */
+            outline: none;
+            box-shadow: 0 0 8px rgba(207, 163, 101, 0.3); /* 這裡改：蜜黃色光暈 */
+        }
+
+        textarea {
+            height: 110px;
+            resize: vertical;
+        }
+
+        /* 複製主站頁尾連結的藍紫色按鈕風格 */
+        button {
+            background-color: transparent;
+            color: #b89056; /* 這裡改：蜜黃色文字 */
+            padding: 12px 16px;
+            border: 1px solid #b89056; /* 這裡改：蜜黃色邊框 */
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 1.05rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            color: #1a1a1c; /* 這裡改：懸浮時字變深岩黑 */
+            background-color: #cfa365; /* 這裡改：北投石蜜黃 */
+            border-color: #cfa365; /* 這裡改：北投石蜜黃 */
+        }
+
+        button:disabled {
+            background-color: #cccccc !important;
+            border-color: #cccccc !important;
+            color: #666666 !important;
+            cursor: not-allowed;
+        }
+
+        /* 返回主站按鈕 */
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #e3d2bc; /* 這裡改：亮乳白，在暗底極度清晰 */
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: bold;
+            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+            transition: opacity 0.3s;
+        }
+        
+        .back-link:hover {
+            opacity: 0.8;
+            text-decoration: underline;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="form-card">
+            <h2>意見調查問卷</h2>
+            <form id="surveyForm">
+                <!-- 欄位一：暱稱 -->
+                <div class="form-group">
+                    <label>暱稱 / 稱呼：</label>
+                    <input type="text" name="name" value="匿名" maxlength="20">
+                </div>
+
+                <!-- 欄位二：意見 -->
+                <div class="form-group">
+                    <label>您的意見：</label>
+                    <textarea name="opinion" placeholder="請輸入您的寶貴意見..." maxlength="500" required></textarea>
+                </div>
+
+                <!-- 欄位三：希望的改善方式 -->
+                <div class="form-group">
+                    <label>希望的改善方式：</label>
+                    <textarea name="improvement" placeholder="請描述您希望如何改善..." maxlength="500" required></textarea>
+                </div>
+
+                <button type="submit" id="submitBtn">送出匿名問卷</button>
+            </form>
+        </div>
+        
+        <a href="Hokutolite.html" class="back-link">← 返回官方網站</a>
+    </div>
+
+    <script>
+        const form = document.getElementById('surveyForm');
+        const submitBtn = document.getElementById('submitBtn');
+        
+        // 🚀 已成功對接第二個城市的運作中 GAS 後端網址
+        const GAS_URL = 'https://script.google.com/macros/s/AKfycbwlYcUbuP2TdqBkp6pRwwmjqJKGCrtbHhQ8j3uX6BpASU7oypc76dExEmfPX2cxmyq8QQ/exec'; 
+
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+            
+            // 鎖定按鈕，防止連續點擊重複送出
+            submitBtn.disabled = true;
+            submitBtn.innerText = '資料傳送中...';
+            
+            const formData = new FormData(form);
+            
+            // 使用第二個城市的可行性傳輸邏輯
+            fetch(GAS_URL, {
+                method: 'POST',
+                body: new URLSearchParams(formData)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.result === 'success') {
+                    alert('提交成功！感謝您的填寫。');
+                    form.reset();
+                    // 重設表單後，將名字那一欄恢復為"匿名"
+                    form.elements['name'].value = '匿名'; 
+                } else {
+                    alert('提交失敗：' + data.message);
+                }
+            })
+            .catch(error => {
+                alert('網路錯誤或伺服器無回應，請稍後再試。');
+                console.error(error);
+            })
+            .finally(() => {
+                // 3秒鐘後才解鎖按鈕（冷卻機制）
+                setTimeout(() => {
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = '送出匿名問卷';
+                }, 3000);
+            });
+        });
+    </script>
+
+</body>
+</html>

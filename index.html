@@ -1,0 +1,389 @@
+﻿<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StenoneStudio 官方網站</title>
+    <style>
+        /* 基礎設定與清除 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* 核心修正：移除 body 的 flex 與居中，改回標準網頁排版，確保黑頂在最上、黑底在最下 */
+        body, html {
+            min-height: 100%;
+            font-family: "Helvetica Neue", Arial, "Noto Sans TC", sans-serif;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column; /* 讓 header, banner, main, footer 由上至下排列 */
+        }
+
+        /* 複製主站背景與模糊特效 */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('starbackground.png'); 
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            filter: blur(3px); /* 模糊度 */
+            background-color: rgba(0, 0, 0, 0.25); 
+            background-blend-mode: multiply;
+            z-index: -1; 
+            transform: scale(1.1); 
+        }
+
+        /* 黑頂 (Header) */
+        header {
+            background-color: #00000055;
+            color: #ffffff;
+            width: 100%;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        header h1 {
+            font-size: 1.8rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        /* 黑頂下方的圖片區塊 */
+        .banner-container {
+            width: 100%;
+            max-width: 100%;
+            height: 250px;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #111111;
+        }
+
+        .banner-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* 中間主要內容區塊 */
+        .main-content {
+            flex: 1; /* 撐開中間區域，把 footer 推到最下面 */
+            width: 100%;
+            padding: 40px 20px;
+        }
+
+        /* 表單外層寬度限制（水平置中） */
+        .container {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto; /* ✨ 核心修正：這行才能讓多個卡片完美在畫面中間排好 */
+        }
+
+        /* 複製主站的半透明白底內容卡片 */
+        .form-card {
+            background-color: rgba(255, 255, 255, 0.9); 
+            padding: 35px;
+            border-radius: 16px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            margin-bottom: 30px; /* ✨ 核心修正：卡片與下一塊卡片拉開 30px 的漂亮距離 */
+        }
+
+        /* 讓最後一個卡片不要有多餘的下留白 */
+        .form-card:last-child {
+            margin-bottom: 0;
+        }
+
+        h2 {
+            font-size: 1.6rem;
+            color: #1d0067; 
+            margin-bottom: 20px;
+            border-left: 5px solid #0303aa;
+            padding-left: 10px;
+            font-weight: bold;
+        }
+
+        /* 選單上方的文字內容區塊 */
+        .intro-text {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: #333333;
+            margin-bottom: 25px;
+        }
+
+        .intro-text p {
+            margin-bottom: 10px;
+        }
+
+        .intro-text p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* 收放選單樣式 */
+        details {
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.9);
+            border: 1px solid #4e2bfc;
+            border-radius: 6px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        details[open] {
+            box-shadow: 0 0 10px rgba(78, 43, 252, 0.15);
+        }
+
+        summary {
+            padding: 14px 20px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #1616c7;
+            cursor: pointer;
+            list-style: none;
+            position: relative;
+            outline: none;
+            user-select: none;
+            transition: background-color 0.3s;
+        }
+
+        summary:hover {
+            background-color: rgba(78, 43, 252, 0.05);
+        }
+
+        summary::after {
+            content: "▼";
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.8rem;
+            color: #4e2bfc;
+            transition: transform 0.3s;
+        }
+
+        details[open] summary::after {
+            transform: translateY(-50%) rotate(180deg);
+        }
+        /* 選單內部的連結列表 */
+        .menu-list {
+            border-top: 1px solid rgba(78, 43, 252, 0.2);
+            padding: 10px 0;
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 核心修正：讓每一行在 HTML 裡就是一個 <a> 標籤，長得像你原本那樣 */
+        .menu-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 20px;
+            color: #333333;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.05rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            background-color: #ffffff;
+            position: relative;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .menu-item:last-child {
+            border-bottom: none;
+        }
+
+        /* 右側常駐顯示的小三角形 */
+        .menu-item::after {
+            content: "▼";
+            font-size: 0.8rem;
+            color: #4e2bfc;
+            margin-left: auto;
+            transition: all 0.2s;
+        }
+
+        /* 滑鼠移入整行時的特效 */
+        .menu-item:hover {
+            background-color: rgba(78, 43, 252, 0.03);
+            padding-right: 180px; /* 核心：滑鼠移入時右邊留出空間放按鈕，防止文字被遮住 */
+        }
+
+        .menu-item:hover::after {
+            transform: rotate(180deg);
+            opacity: 0; /* 移入時把原本的箭頭藏起來 */
+        }
+
+        /* 💡 核心 JS-free 魔法：動態生成懸浮按鈕群組 */
+        .button-overlay {
+            display: none;
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            gap: 10px;
+            pointer-events: auto; /* 確保按鈕可以點擊 */
+        }
+
+        .menu-item:hover .button-overlay {
+            display: flex; /* 滑鼠移入時顯示按鈕 */
+        }
+
+        /* 按鈕外觀設定 */
+        .hover-btn {
+            display: inline-block;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        /* YouTube 按鈕 */
+        .h-btn-yt {
+            color: #cc0000;
+            border: 1px solid #cc0000;
+            background-color: #ffffff;
+        }
+        .h-btn-yt:hover {
+            color: #ffffff;
+            background-color: #cc0000;
+        }
+
+        /* 官方網站按鈕 */
+        .h-btn-web {
+            color: #1616c7;
+            border: 1px solid #4e2bfc;
+            background-color: #ffffff;
+        }
+        .h-btn-web:hover {
+            color: #ffffff;
+            background-color: #0000cc;
+        }
+
+        /* 沒有網站的按鈕樣式 */
+        .h-btn-disabled {
+            color: #999999 !important;
+            border-color: #cccccc !important;
+            background-color: #fafafa !important;
+            cursor: not-allowed !important;
+            opacity: 0.7;
+        }
+
+
+        /* 黑底 (Footer) */
+        footer {
+            background-color: #00000099;
+            color: #aaaaaa;
+            text-align: center;
+            padding: 30px 20px;
+            width: 100%;
+        }
+
+        footer p {
+            font-size: 0.9rem;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- 1. 黑頂 -->
+    <header>
+        <h1>StenoneStudio 官方入口網</h1>
+    </header>
+
+    <!-- 2. 黑頂下面的圖片區塊 -->
+    <div class="banner-container">
+        <img src="banner.png" alt="官方橫幅圖片">
+    </div>
+
+    <!-- 3. 中間主要內容 -->
+    <main class="main-content">
+        
+        <!-- 💡 注意：整個網頁只能有「一個」container 把所有卡片包起來 -->
+        <div class="container">
+            
+
+            <!-- 第一個卡片（只要像這樣整塊複製，貼在第一個卡片下面即可） -->
+            <div class="form-card">
+                <h2>🌐 StenoneStudio 工作室簡介StenoneStudio</h2>
+                <div class="intro-text">
+                    <p>是一個專注於技術討論、創作交流與工具分享的互助社群。本工作室成立的核心宗旨在於「互相幫助，共同成長」。不論你是擅長寫程式、製作 3D 物品、進行鋼琴編曲（MIDI/寫譜），或是熱衷於影片剪輯與特效製作，這裡都提供了一個純粹的技術交流平台。</p>
+                    <p>【我們的核心原則】純粹交流，拒絕商業宣傳：本伺服器僅供技術探討與工具心得分享，內部絕無流於表面或具干擾性的廣告宣傳內容，還給創作者最乾淨的討論空間。一視同仁，實力創作為先：不論你的頻道訂閱數量多寡、資歷深淺，在 StenoneStudio 內皆一視同仁。我們看重的是分享的熱忱與對技術的追求。互相尊重，遵守社群規範：進來交流的同時，也請務必閱讀並遵守伺服器內的基本規範與神祕小規矩，共同維護友善、理性的創作環境。歡迎各位創作者多加利用「公告專區」與「學術討論區」內的各個頻道，分享你的精采作品與實用技巧！</p>
+                </div>
+            </div>
+
+            <!-- 身分組 -->
+            <div class="form-card">
+                <h2>🌐 Discord身分組介紹</h2>
+                <div class="intro-text">
+                    <p>🟪開發人員:負責幫忙開發。</p>
+                    <p>🟥甲級管理員:權限最高的管理員，擁有所有權限。</p>
+                    <p>🟧乙級管理員:權限中等的管理員。</p>
+                    <p>🟨丙級管理員:權限最低的管理員。</p>
+                    <p>🟦實況主:有自己YT頻道的人。</p>
+                    <p>🟩客串觀眾:觀眾們，只能看訊息。</p>
+                </div>
+            </div>
+
+            <!-- 第三個卡片 -->
+            <div class="form-card">
+                <h2>🌐 StenoneStudio 成員 </h2>
+                <div class="intro-text">
+                     <p>我們的成員：</p>
+                </div>
+<details open>
+    <summary>實況主們</summary>
+    <div class="menu-list">
+        
+        <!-- Hokutolite -->
+        <div class="menu-item">Hokutolite<span class="button-overlay"><a href="https://www.youtube.com/channel/UCpdqw6Vl0eyfHVy5Y8GO5Yg" target="_blank" class="hover-btn h-btn-yt">▶ YouTube</a><a href="hokutolite/Hokutolite.html" class="hover-btn h-btn-web">🌐 官方網站</a></span></div>
+
+        <!-- Mango -->
+        <div class="menu-item">Mango芒果冰鯊🥭<span class="button-overlay"><a href="https://www.youtube.com/channel/UCYdGRVYFyP3SesMUjZB529w" target="_blank" class="hover-btn h-btn-yt">▶ YouTube</a><a href="mango/Mango.html" class="hover-btn h-btn-web">🌐 官方網站</a></span></div>
+
+        <!-- KIP_4444 -->
+        <div class="menu-item">KIP_4444<span class="button-overlay"><a href="https://www.youtube.com/channel/UCoGVDJhxCbK1TBc7Xnjl_yg" target="_blank" class="hover-btn h-btn-yt">▶ YouTube</a><a href="#" class="hover-btn h-btn-web h-btn-disabled" onclick="alert('該實況主目前尚未建置官方網站！'); return false;">❌ 沒有網站</a></span></div>
+
+        <!-- ☪⚚_柴柴_⚚ৡ -->
+        <div class="menu-item">☪⚚_柴柴_⚚ৡ<span class="button-overlay"><a href="https://www.youtube.com/channel/UC5PwsJ2jNOZdCoxCwMOTeSQ" target="_blank" class="hover-btn h-btn-yt">▶ YouTube</a><a href="#" class="hover-btn h-btn-web h-btn-disabled" onclick="alert('該實況主目前尚未建置官方網站！'); return false;">❌ 沒有網站</a></span></div>
+
+        <!-- 神龍 -->
+        <div class="menu-item">神龍:)<span class="button-overlay"><a href="https://www.youtube.com/channel/UCZdDnSGFa2UBAB5wftthS_w" target="_blank" class="hover-btn h-btn-yt">▶ YouTube</a><a href="https://weijiweiji06.wixsite.com/shenlongytpd" class="hover-btn h-btn-web">🌐 官方網站</a></span></div>
+
+        <!-- Carsonyim喵站長 -->
+        <div class="menu-item">Carsonyim喵站長<span class="button-overlay"><a href="https://youtube.com/channel/UCNVEUZ1MwxLfrDYZBOzvZCA" target="_blank" class="hover-btn h-btn-yt">▶ YouTube</a><a href="#" class="hover-btn h-btn-web h-btn-disabled" onclick="alert('該實況主目前尚未建置官方網站！'); return false;">❌ 沒有網站</a></span></div>
+
+        <!-- supermonkeyYT -->
+        <div class="menu-item">supermonkeyYT<span class="button-overlay"><a href="https://www.youtube.com/channel/UCvQnmVXOKNczaMdw1KHsYpA" target="_blank" class="hover-btn h-btn-yt">▶ YouTube</a><a href="#" class="hover-btn h-btn-web h-btn-disabled" onclick="alert('該實況主目前尚未建置官方網站！'); return false;">❌ 沒有網站</a></span></div>
+</div>
+</details>
+
+
+            </div>
+
+        </div> <!-- 💡 container 到這裡才結束 -->
+        
+    </main>
+
+    <!-- 4. 黑底 -->
+    <footer>
+        <p>© 2026 StenoneStudio 版權所有</p>
+    </footer>
+
+</body>
+
+</html>
