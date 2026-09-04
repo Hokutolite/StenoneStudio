@@ -184,62 +184,64 @@
             flex-direction: column;
         }
 
-        /* 核心修正：讓每一行在 HTML 裡就是一個 <a> 標籤，長得像你原本那樣 */
-        .menu-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 14px 20px;
-            color: #333333;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 1.05rem;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-            background-color: #ffffff;
-            position: relative;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
+/* 修改選單項目基礎樣式 */
+.menu-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    color: #333333;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1.05rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    background-color: #ffffff;
+    position: relative;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
 
-        .menu-item:last-child {
-            border-bottom: none;
-        }
+.menu-item:last-child {
+    border-bottom: none;
+}
 
-        /* 右側常駐顯示的小三角形 */
-        .menu-item::after {
-            content: "▼";
-            font-size: 0.8rem;
-            color: #4e2bfc;
-            margin-left: auto;
-            transition: all 0.2s;
-        }
+/* 右側三角形圖示 */
+.menu-item::after {
+    content: "▼";
+    font-size: 0.8rem;
+    color: #4e2bfc;
+    margin-left: auto;
+    transition: transform 0.3s, opacity 0.2s;
+}
 
-        /* 滑鼠移入整行時的特效 */
-        .menu-item:hover {
-            background-color: rgba(78, 43, 252, 0.03);
-            padding-right: 180px; /* 核心：滑鼠移入時右邊留出空間放按鈕，防止文字被遮住 */
-        }
+/* 懸浮/點擊展開狀態 (.active 或 hover) */
+.menu-item:hover, .menu-item.active {
+    background-color: rgba(78, 43, 252, 0.03);
+    padding-right: 180px; /* 右側預留空間放按鈕 */
+}
 
-        .menu-item:hover::after {
-            transform: rotate(180deg);
-            opacity: 0; /* 移入時把原本的箭頭藏起來 */
-        }
+/* 展開時將三角形旋轉並隱藏 */
+.menu-item.active::after {
+    transform: rotate(180deg);
+    opacity: 0;
+}
 
-        /* 💡 核心 JS-free 魔法：動態生成懸浮按鈕群組 */
-        .button-overlay {
-            display: none;
-            position: absolute;
-            right: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            gap: 10px;
-            pointer-events: auto; /* 確保按鈕可以點擊 */
-        }
+/* 按鈕群組預設隱藏 */
+.button-overlay {
+    display: none;
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    gap: 10px;
+    z-index: 2;
+}
 
-        .menu-item:hover .button-overlay {
-            display: flex; /* 滑鼠移入時顯示按鈕 */
-        }
-
+/* 當項目被點擊切換為 active，或是電腦版 hover 時顯示按鈕 */
+.menu-item.active .button-overlay,
+.menu-item:hover .button-overlay {
+    display: flex;
+}
         /* 按鈕外觀設定 */
         .hover-btn {
             display: inline-block;
@@ -299,6 +301,40 @@
 
     </style>
 </head>
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const menuItems = document.querySelectorAll(".menu-item");
+
+        menuItems.forEach(item => {
+            item.addEventListener("click", function (e) {
+                // 如果點擊的是按鈕本體，允許正常跳轉或執行 onclick 動作
+                if (e.target.closest(".hover-btn")) {
+                    return;
+                }
+
+                // 阻止預設行為與冒泡
+                e.preventDefault();
+
+                // 關閉其他已展開的項目
+                menuItems.forEach(otherItem => {
+                    if (otherItem !== item) {
+                        otherItem.classList.remove("active");
+                    }
+                });
+
+                // 切換當前項目的展開/收合狀態
+                item.classList.toggle("active");
+            });
+        });
+
+        // 點擊選單外部時，自動收合所有已展開的按鈕
+        document.addEventListener("click", function (e) {
+            if (!e.target.closest(".menu-item")) {
+                menuItems.forEach(item => item.classList.remove("active"));
+            }
+        });
+    });
+</script>
 <body>
 
     <!-- 1. 黑頂 -->
