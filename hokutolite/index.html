@@ -157,6 +157,34 @@
 
     </style>
 </head>
+        <script>
+               // 1. 設定你的設定與參數
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbx10H16SaU-w09-IrQyi_0kYgpqQyZvuYkotKxoZvrsI6fQBGkpNMrjFQPsxlbAFOiV/exec"; 
+        const ACCOUNT_ID = "002"; // 這個網站要讀取的帳戶 ID
+
+        // 2. 網頁載入時自動執行
+        window.addEventListener('DOMContentLoaded', () => {
+            const noticeBox = document.getElementById('notice-box');
+
+            // 向後端發送請求 (帶上 action 與 id)
+            fetch(`${GAS_URL}?action=getNotice&id=${ACCOUNT_ID}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === "success") {
+                        // 成功拿到資料，直接將後端的 HTML 內容塞入區塊
+                        noticeBox.innerHTML = data.content;
+                    } else {
+                        // 後端回傳錯誤（例如找不到帳戶）
+                        noticeBox.innerHTML = `<p style="color: red;">無法載入公告：${data.message}</p>`;
+                    }
+                })
+                .catch(error => {
+                    // 網路連線或連到 GAS 失敗
+                    console.error("Error:", error);
+                    noticeBox.innerHTML = `<p style="color: red;">系統連線失敗，請稍後再試。</p>`;
+                });
+        });
+      </script>
 <body>
 
     <!-- 最上方頭貼區塊 -->
@@ -182,13 +210,12 @@
         </section>
 
         <!-- 區塊三：最新公告 -->
-        <section class="section-card">
+       <section class="section-card">
             <h2>最新公告</h2>
-            <p>1.因為北投石本人要準備會考，可能在會考前都無法發片或偶爾發片。</p>
-            <p>2.如果要與北投石合作，請私訊。</p>
-            <h5>Discord:hokutolite ․·˙·․·˙·․·˙·․ Gmail:Hokutolite217@gmail.com。</h5>
+            <div id="notice-box">
+                <p>公告載入中...</p>
+            </div>
         </section>
-
     </main>
 
     <!-- 最下面黑底與網址 -->
